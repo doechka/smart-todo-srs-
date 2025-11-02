@@ -5,6 +5,7 @@ let currentLearningIndex = 0;
 let learningStats = JSON.parse(localStorage.getItem('learningStats')) || {};
 
 
+
 function createDeck() {
     const deckNameInput = document.getElementById('deckName');
     const deckName = deckNameInput.value.trim();
@@ -322,22 +323,7 @@ function exitLearning() {
     }
 }
 
-function updateProgressInfo() {
-    document.getElementById('currentCardNumber').textContent = currentLearningIndex + 1;
-    document.getElementById('totalCards').textContent = learningCards.length;
-}
-
-function setupEnterKey() {
-    const deckInput = document.getElementById('deckName');
-    const questionInput = document.getElementById('cardQuestion');
-    const answerInput = document.getElementById('cardAnswer');
-    
-    deckInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            createDeck();
-        }
-    });
-    
+<
     questionInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             answerInput.focus();
@@ -351,30 +337,6 @@ function setupEnterKey() {
     });
 }
 
-function showNotification(message, type = 'info') {
-    console.log(`[${type.toUpperCase()}] ${message}`);
-    
-    const notification = document.createElement('div');
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 15px 20px;
-        background: ${type === 'success' ? '#27ae60' : type === 'warning' ? '#e67e22' : type === 'error' ? '#e74c3c' : '#3498db'};
-        color: white;
-        border-radius: 5px;
-        z-index: 1000;
-        font-weight: bold;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    `;
-    notification.textContent = message;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        document.body.removeChild(notification);
-    }, 3000);
-}
 
 document.addEventListener('DOMContentLoaded', function() {
     renderDecks();
@@ -387,6 +349,5 @@ document.addEventListener('DOMContentLoaded', function() {
             viewDeck(parseInt(lastDeckId));
         }
     }
-    
-    console.log('Приложение "Умные карточки" загружено!');
+
 });
