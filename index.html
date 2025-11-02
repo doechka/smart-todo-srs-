@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Умные карточки - Anki-подобное приложение</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Умные карточки</h1>
+        
+        <div class="decks-section">
+            <h2>Мои колоды</h2>
+            <div class="input-section">
+                <input type="text" id="deckName" placeholder="Название новой колоды...">
+                <button onclick="createDeck()">Создать колоду</button>
+            </div>
+            <ul id="decksList"></ul>
+        </div>
+
+        <div class="cards-section" id="cardsSection" style="display: none;">
+            <h2 id="currentDeckTitle"></h2>
+            <div class="input-section">
+                <input type="text" id="cardQuestion" placeholder="Вопрос...">
+                <input type="text" id="cardAnswer" placeholder="Ответ...">
+                <button onclick="addCard()">Добавить карточку</button>
+            </div>
+            <ul id="cardsList"></ul>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
