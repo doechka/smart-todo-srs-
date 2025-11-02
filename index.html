@@ -28,6 +28,27 @@
             </div>
             <ul id="cardsList"></ul>
         </div>
+
+        <div class="learning-section" id="learningSection" style="display: none;">
+            <h2>Режим обучения</h2>
+            <div class="progress-info">
+                Карточка <span id="currentCardNumber">1</span> из <span id="totalCards">0</span>
+            </div>
+            <div class="card" id="learningCard">
+                <div class="card-front" id="cardFront"></div>
+                <div class="card-back" id="cardBack" style="display: none;"></div>
+            </div>
+            <div class="learning-controls">
+                <button onclick="showAnswer()" id="showAnswerBtn">Показать ответ</button>
+                <div class="rating-buttons" id="ratingButtons" style="display: none;">
+                    <button onclick="rateCard('again')" class="rate-again">Снова</button>
+                    <button onclick="rateCard('hard')" class="rate-hard">Трудно</button>
+                    <button onclick="rateCard('good')" class="rate-good">Хорошо</button>
+                    <button onclick="rateCard('easy')" class="rate-easy">Легко</button>
+                </div>
+                <button onclick="exitLearning()" class="exit-btn">Выйти из обучения</button>
+            </div>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
