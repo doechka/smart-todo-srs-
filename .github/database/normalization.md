@@ -74,5 +74,5 @@ Cards(card_id, question, answer, deck_id, deck_name, user_id, username, tags, me
 - Индексы на всех внешних ключах
 - Индекс на next_review_date для быстрого поиска карточек к повторению
 - Индексы на часто используемых полях фильтрации
-# [ER-диаграмма](docs/database/ER-диаграммма.drawio.svg)
+# [ER-диаграмма](/docs/database/ER-диаграммма.drawio.svg)
 # [Схема нормализации](/.github/database/schema.sql)
