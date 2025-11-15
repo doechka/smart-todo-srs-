@@ -75,4 +75,4 @@ Cards(card_id, question, answer, deck_id, deck_name, user_id, username, tags, me
 - Индекс на next_review_date для быстрого поиска карточек к повторению
 - Индексы на часто используемых полях фильтрации
 # [ER-диаграмма](https://github.com/doechka/smart-todo-srs-/blob/main/docs/database/ER-диаграммма.drawio.svg)
-# [Схема нормализации](https://github.com/doechka/smart-todo-srs-/blob/main/.github/database/schema.sql)
+# [Схема нормализации](.github/database/schema.sql)
