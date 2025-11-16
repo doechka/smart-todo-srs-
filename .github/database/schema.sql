@@ -1,24 +1,25 @@
--- Исправленная нормализованная схема БД
+-- НОРМАЛИЗОВАННАЯ СХЕМА ДЛЯ ПРИЛОЖЕНИЯ "УМНЫЕ КАРТОЧКИ"
+-- Нормализована до 3NF (исправленная версия без циклических зависимостей)
 
 -- Таблица пользователей
 CREATE TABLE Users (
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    email VARCHAR(100) NOT NULL UNIQUE,
+    username TEXT NOT NULL UNIQUE,
+    email TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now'))
 );
 
 -- Таблица колод
 CREATE TABLE Decks (
     deck_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name VARCHAR(100) NOT NULL,
+    name TEXT NOT NULL,
     description TEXT,
     user_id INTEGER NOT NULL,
     is_public BOOLEAN DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
 
@@ -29,35 +30,35 @@ CREATE TABLE Cards (
     question TEXT NOT NULL,
     answer TEXT NOT NULL,
     explanation TEXT,
-    difficulty_level INTEGER DEFAULT 1,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    difficulty_level INTEGER DEFAULT 1, -- 1-5 сложность
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (deck_id) REFERENCES Decks(deck_id) ON DELETE CASCADE
 );
 
--- Таблица сессий обучения (ИСПРАВЛЕНА - убран user_id)
+-- Таблица сессий обучения (ИСПРАВЛЕНО: убран user_id)
 CREATE TABLE StudySessions (
     session_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    deck_id INTEGER NOT NULL,  -- достаточно связи через deck
-    start_time TIMESTAMP NOT NULL,
-    end_time TIMESTAMP,
+    deck_id INTEGER NOT NULL,
+    start_time TEXT NOT NULL,
+    end_time TEXT,
     cards_studied INTEGER DEFAULT 0,
     correct_answers INTEGER DEFAULT 0,
-    session_type VARCHAR(20) DEFAULT 'learning',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    session_type TEXT DEFAULT 'learning', -- learning/review
+    created_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (deck_id) REFERENCES Decks(deck_id) ON DELETE CASCADE
 );
 
--- Таблица оценок карточек (ИСПРАВЛЕНА - убран user_id)
+-- Таблица оценок карточек (интервальное повторение) (ИСПРАВЛЕНО: убран user_id)
 CREATE TABLE CardReviews (
     review_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    card_id INTEGER NOT NULL,  -- достаточно связи через card
-    rating VARCHAR(10) NOT NULL CHECK(rating IN ('again', 'hard', 'good', 'easy')),
-    review_date TIMESTAMP NOT NULL,
-    next_review_date TIMESTAMP NOT NULL,
+    card_id INTEGER NOT NULL,
+    rating TEXT NOT NULL CHECK(rating IN ('again', 'hard', 'good', 'easy')),
+    review_date TEXT NOT NULL,
+    next_review_date TEXT NOT NULL,
     interval_days INTEGER DEFAULT 1,
     ease_factor REAL DEFAULT 2.5,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (card_id) REFERENCES Cards(card_id) ON DELETE CASCADE
 );
 
@@ -65,37 +66,40 @@ CREATE TABLE CardReviews (
 CREATE TABLE MediaFiles (
     media_id INTEGER PRIMARY KEY AUTOINCREMENT,
     card_id INTEGER NOT NULL,
-    file_type VARCHAR(10) CHECK(file_type IN ('image', 'audio')),
-    file_name VARCHAR(255) NOT NULL,
+    file_type TEXT NOT NULL CHECK(file_type IN ('image', 'audio')),
+    file_name TEXT NOT NULL,
     file_path TEXT NOT NULL,
     file_size INTEGER,
-    mime_type VARCHAR(100),
-    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    mime_type TEXT,
+    uploaded_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (card_id) REFERENCES Cards(card_id) ON DELETE CASCADE
 );
 
--- Таблица тегов
+-- Таблица тегов для карточек
 CREATE TABLE Tags (
     tag_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name VARCHAR(50) NOT NULL UNIQUE,
+    name TEXT NOT NULL UNIQUE,
     description TEXT,
-    color VARCHAR(7) DEFAULT '#3498db',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    color TEXT DEFAULT '#3498db',
+    created_at TEXT DEFAULT (datetime('now'))
 );
 
--- Таблица связи карточек и тегов
+-- Связь многие-ко-многим между карточками и тегами
 CREATE TABLE CardTags (
     card_id INTEGER,
     tag_id INTEGER,
-    assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    assigned_at TEXT DEFAULT (datetime('now')),
     PRIMARY KEY (card_id, tag_id),
     FOREIGN KEY (card_id) REFERENCES Cards(card_id) ON DELETE CASCADE,
     FOREIGN KEY (tag_id) REFERENCES Tags(tag_id) ON DELETE CASCADE
 );
 
--- Индексы для оптимизации
+-- Индексы для оптимизации производительности (ИСПРАВЛЕНЫ: убраны избыточные индексы)
 CREATE INDEX idx_decks_user_id ON Decks(user_id);
 CREATE INDEX idx_cards_deck_id ON Cards(deck_id);
 CREATE INDEX idx_study_sessions_deck_id ON StudySessions(deck_id);
 CREATE INDEX idx_card_reviews_card_id ON CardReviews(card_id);
 CREATE INDEX idx_card_reviews_next_review ON CardReviews(next_review_date);
+CREATE INDEX idx_media_files_card_id ON MediaFiles(card_id);
+CREATE INDEX idx_card_tags_card_id ON CardTags(card_id);
+CREATE INDEX idx_card_tags_tag_id ON CardTags(tag_id);
