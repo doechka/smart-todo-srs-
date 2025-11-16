@@ -40,13 +40,18 @@ INSERT INTO CardTags (card_id, tag_id) VALUES
 (6, 1), (6, 4),
 (7, 2), (7, 4);
 
--- Добавляем записи об обучении
-INSERT INTO StudySessions (user_id, deck_id, start_time, end_time, cards_studied, correct_answers) VALUES 
-(1, 1, '2024-12-01 10:00:00', '2024-12-01 10:30:00', 10, 8),
-(1, 2, '2024-12-02 14:00:00', '2024-12-02 15:00:00', 15, 12);
+-- Добавляем записи об обучении (ИСПРАВЛЕНО: убран user_id)
+INSERT INTO StudySessions (deck_id, start_time, end_time, cards_studied, correct_answers) VALUES 
+(1, '2024-12-01 10:00:00', '2024-12-01 10:30:00', 10, 8),
+(2, '2024-12-02 14:00:00', '2024-12-02 15:00:00', 15, 12);
 
--- Добавляем оценки карточек
-INSERT INTO CardReviews (card_id, user_id, rating, review_date, next_review_date, interval_days) VALUES 
-(1, 1, 'good', '2024-12-01 10:05:00', '2024-12-02 10:05:00', 1),
-(2, 1, 'easy', '2024-12-01 10:10:00', '2024-12-04 10:10:00', 3),
-(3, 1, 'hard', '2024-12-01 10:15:00', '2024-12-01 18:15:00', 0);
+-- Добавляем оценки карточек (ИСПРАВЛЕНО: убран user_id)
+INSERT INTO CardReviews (card_id, rating, review_date, next_review_date, interval_days) VALUES 
+(1, 'good', '2024-12-01 10:05:00', '2024-12-02 10:05:00', 1),
+(2, 'easy', '2024-12-01 10:10:00', '2024-12-04 10:10:00', 3),
+(3, 'hard', '2024-12-01 10:15:00', '2024-12-01 18:15:00', 0);
+
+-- Добавляем медиа-файлы для демонстрации
+INSERT INTO MediaFiles (card_id, file_type, file_name, file_path, file_size, mime_type) VALUES 
+(1, 'image', 'hello.jpg', '/media/images/hello.jpg', 102400, 'image/jpeg'),
+(3, 'audio', 'computer.mp3', '/media/audio/computer.mp3', 2048000, 'audio/mpeg');
