@@ -1,0 +1,1032 @@
+{
+	"info": {
+		"_postman_id": "dde28c49-aad3-4e0c-9fbb-aa1ece663e0e",
+		"name": "Smart Cards API",
+		"description": "Коллекция для тестирования API приложения \"Умные карточки\"",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "50728710",
+		"_collection_link": "https://doechka-3384307.postman.co/workspace/62aee822-c162-4aaf-8255-75675f8e758f/collection/50728710-dde28c49-aad3-4e0c-9fbb-aa1ece663e0e?action=share&source=collection_link&creator=50728710"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Тест 1: Проверяем статус код\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Тест 2: Проверяем что есть токен\r",
+									"pm.test(\"Response has auth token\", function () {\r",
+									"    var response = pm.response.json();\r",
+									"    pm.expect(response.token).to.not.be.undefined;\r",
+									"});\r",
+									"\r",
+									"// Тест 3: Сохраняем токен для других запросов\r",
+									"pm.test(\"Save token to environment\", function () {\r",
+									"    var response = pm.response.json();\r",
+									"    pm.environment.set(\"auth_token\", response.token);\r",
+									"    pm.environment.set(\"user_id\", response.user_id);\r",
+									"    \r",
+									"    console.log(\"Token saved:\", response.token);\r",
+									"    console.log(\"User ID saved:\", response.user_id);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"smartcards_user\",\r\n    \"password\": \"password123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success - Login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"username\":\"smartcards_user\",\"password\":\"password123\"}",
+									"options": {
+										"raw": "json"
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": ""
+								}
+							],
+							"cookie": [],
+							"body": "{\"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.mock_token\",\"user_id\": 1,\"username\": \"test_user\",\"message\": \"Login successful\"}"
+						},
+						{
+							"name": "Error - Invalid credentials",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"username\":\"smartcards_user\",\"password\":\"password123\"}",
+									"options": {
+										"raw": "json"
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": ""
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Invalid credentials\",\n    \"code\": \"AUTH_ERROR\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Запросы для авторизации и аутентификации"
+		},
+		{
+			"name": "Decks Management",
+			"item": [
+				{
+					"name": "Create Deck",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Английские слова\",\r\n    \"description\": \"Колода для изучения английского\",\r\n    \"is_public\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/decks",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"decks"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"name\":\"Английские слова\",\"description\":\"Колода для изучения английского\",\"is_public\":true}",
+									"options": {
+										"raw": "json"
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/decks",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"decks"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{auth_token}}",
+									"description": ""
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": ""
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"deck_id\": 1,\n    \"name\": \"Английские слова\",\n    \"message\": \"Deck created successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get All Desks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Проверяем статус код\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Проверяем структуру ответа\r",
+									"pm.test(\"Response has decks array\", function () {\r",
+									"    var response = pm.response.json();\r",
+									"    pm.expect(response.decks).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"// Сохраняем ID первой колоды для других тестов\r",
+									"pm.test(\"Save first deck ID\", function () {\r",
+									"    var response = pm.response.json();\r",
+									"    if (response.decks.length > 0) {\r",
+									"        pm.environment.set(\"deck_id\", response.decks[0].id);\r",
+									"        console.log(\"Saved deck ID:\", response.decks[0].id);\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/decks",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"decks"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success - With decks",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{base_url}}/decks",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"decks"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{auth_token}}",
+									"description": ""
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"decks\": [\n        {\n            \"id\": 1,\n            \"name\": \"Английские слова\",\n            \"description\": \"Базовые английские слова\",\n            \"cards_count\": 25,\n            \"created_at\": \"2024-01-15T10:00:00Z\",\n            \"is_public\": true\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Программирование\",\n            \"description\": \"Термины программирования\",\n            \"cards_count\": 15,\n            \"created_at\": \"2024-01-10T14:30:00Z\",\n            \"is_public\": false\n        }\n    ],\n    \"total\": 2\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Deck Details",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/decks/{{deck_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"decks",
+								"{{deck_id}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{base_url}}/decks/{{deck_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"decks",
+										"{{deck_id}}"
+									],
+									"variable": [
+										{
+											"key": "base_url",
+											"value": "{{base_url}}"
+										},
+										{
+											"key": "deck_id",
+											"value": "{{deck_id}}"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{auth_token}}",
+									"description": ""
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"name\": \"Английские слова\",\n    \"description\": \"Базовые английские слова\",\n    \"cards_count\": 25,\n    \"created_at\": \"2024-01-15T10:00:00Z\",\n    \"is_public\": true,\n    \"owner_id\": 1,\n    \"stats\": {\n        \"total_cards\": 25,\n        \"studied_cards\": 10,\n        \"average_score\": 75.5\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Deck",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Обновленное название\",\r\n    \"description\": \"Новое описание колоды\",\r\n    \"is_public\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/decks/{{deck_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"decks",
+								"{{deck_id}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"name\":\"Обновленное название\",\"description\":\"Новое описание колоды\",\"is_public\":false}",
+									"options": {
+										"raw": "json"
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/decks/{{deck_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"decks",
+										"{{deck_id}}"
+									],
+									"variable": [
+										{
+											"key": "deck_id",
+											"value": "{{deck_id}}"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{auth_token}}",
+									"description": ""
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": ""
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Deck updated successfully\",\n    \"updated_at\": \"2024-12-15T14:30:00Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Deck",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": [
+						{
+							"name": "Deck Deleted Successfully",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": "json"
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/decks/{{deck_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"decks",
+										"{{deck_id}}"
+									],
+									"variable": [
+										{
+											"key": "deck_id",
+											"value": "{{deck_id}}"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{auth_token}}",
+									"description": ""
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Deck deleted successfully\",\n    \"deleted_at\": \"2024-12-15T14:35:00Z\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Управление колодами"
+		},
+		{
+			"name": "Cards Management",
+			"item": [
+				{
+					"name": "Create Card",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": [
+						{
+							"name": "Card Created - 201",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"question\":\"Что такое REST API?\",\"answer\":\"Архитектурный стиль для веб-сервисов\",\"explanation\":\"Использует стандартные HTTP методы\",\"difficulty\":\"medium\",\"tags\":[\"программирование\",\"API\"]}",
+									"options": {
+										"raw": "json"
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/decks/{{deck_id}}/cards",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"decks",
+										"{{deck_id}}",
+										"cards"
+									],
+									"variable": [
+										{
+											"key": "base_url",
+											"value": "{{base_url}}"
+										},
+										{
+											"key": "deck_id",
+											"value": "{{deck_id}}"
+										}
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{auth_token}}",
+									"description": ""
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": ""
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"card_id\": 101,\n    \"question\": \"Что такое REST API?\",\n    \"answer\": \"Архитектурный стиль для веб-сервисов\",\n    \"deck_id\": 1,\n    \"created_at\": \"2024-12-15T15:00:00Z\",\n    \"next_review_date\": \"2024-12-16T15:00:00Z\",\n    \"message\": \"Card created successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Deck Cards",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": [
+						{
+							"name": "Successful response - 200",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/decks/{{deck_id}}/cards?page=1&limit=10&difficulty=all",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"decks",
+										"{{deck_id}}",
+										"cards"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										},
+										{
+											"key": "difficulty",
+											"value": "all"
+										}
+									],
+									"variable": [
+										{
+											"key": "base_url",
+											"value": "{{base_url}}"
+										},
+										{
+											"key": "deck_id",
+											"value": "{{deck_id}}"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{auth_token}}",
+									"description": ""
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"cards\": [\n        {\n            \"id\": 101,\n            \"question\": \"Что такое REST API?\",\n            \"answer\": \"Архитектурный стиль для веб-сервисов\",\n            \"difficulty\": \"medium\",\n            \"next_review\": \"2024-12-16T10:00:00Z\",\n            \"stats\": {\n                \"reviews\": 0,\n                \"correct\": 0\n            }\n        }\n    ],\n    \"pagination\": {\n        \"page\": 1,\n        \"limit\": 10,\n        \"total\": 1,\n        \"pages\": 1\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Card",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"question\": \"Обновленный вопрос\",\r\n    \"answer\": \"Обновленный ответ\",\r\n    \"explanation\": \"Новое объяснение\",\r\n    \"difficulty\": \"hard\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/cards/{{card_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cards",
+								"{{card_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Управление карточками"
+		},
+		{
+			"name": "Study Sessions",
+			"item": [
+				{
+					"name": "Submit Card Review",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"rating\": \"good\", \"response_time_ms\": 3500, \"reviewed_at\": \"2024-12-15T16:05:00Z\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/cards/{{card_id}}/reviews",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cards",
+								"{{card_id}}",
+								"reviews"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"rating\": \"good\", \"response_time_ms\": 3500, \"reviewed_at\": \"2024-12-15T16:05:00Z\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/cards/{{card_id}}/reviews",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"cards",
+										"{{card_id}}",
+										"reviews"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": ""
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"card_id\": 101,\n    \"rating\": \"good\",\n    \"next_review_date\": \"2024-12-18T16:05:00Z\",\n    \"interval_days\": 3,\n    \"ease_factor\": 2.5,\n    \"message\": \"Review saved successfully\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Start Study Session",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"deck_id\": \"{{deck_id}}\", \"mode\": \"review\", \"cards_limit\": 10, \"time_limit\": 15}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/study/sessions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"study",
+								"sessions"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "201 Created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"deck_id\": \"{{deck_id}}\", \"mode\": \"review\", \"cards_limit\": 10, \"time_limit\": 15}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/study/sessions",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"study",
+										"sessions"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": ""
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"session_id\": 1001,\n    \"deck_id\": 1,\n    \"cards\": [\n        {\n            \"id\": 101,\n            \"question\": \"Что такое REST API?\"\n        }\n    ],\n    \"settings\": {\n        \"mode\": \"review\",\n        \"cards_limit\": 10,\n        \"time_limit\": 15\n    },\n    \"started_at\": \"2024-12-15T16:00:00Z\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Сессии обучения"
+		},
+		{
+			"name": "Reviews & Statistics",
+			"item": [
+				{
+					"name": "Get Learning Progress",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/progress?period=week",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"progress"
+							],
+							"query": [
+								{
+									"key": "period",
+									"value": "week"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/progress?period=week",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"progress"
+									],
+									"query": [
+										{
+											"key": "period",
+											"value": "week"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{}"
+						}
+					]
+				},
+				{
+					"name": "Get Statistics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/{{user_id}}/statistics",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}}",
+								"statistics"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/{{user_id}}/statistics",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										"{{user_id}}",
+										"statistics"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n    \"user_id\": 1,\n    \"total_decks\": 3,\n    \"total_cards\": 45,\n    \"total_study_sessions\": 12,\n    \"total_study_time_minutes\": 240,\n    \"streak_days\": 7,\n    \"average_score\": 78.5,\n    \"by_deck\": [\n        {\n            \"deck_id\": 1,\n            \"deck_name\": \"Английские слова\",\n            \"cards_studied\": 25,\n            \"average_score\": 82.0\n        }\n    ],\n    \"by_date\": {\n        \"2024-12-15\": {\n            \"cards_studied\": 10,\n            \"average_score\": 85.0\n        }\n    }\n}"
+						}
+					]
+				}
+			],
+			"description": "Оценки и статистика"
+		}
+	]
+}
