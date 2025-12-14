@@ -31,41 +31,41 @@
 ## Examples
 
 ### Login
-- Name: Success - Login
-- URL: {{base_url}}/auth/login?username=test_user
-- Name: Error - Invalid credentials
-- URL: {{base_url}}/auth/login?username=wrong_user
+- Name: Success - Login  
+  URL: {{base_url}}/auth/login
+- Name: Error - Invalid credentials  
+  URL: {{base_url}}/auth/login
 
 ### Get All Decks
-- Name: Success - With decks
-- URL: {{base_url}}/decks
-- Name: Success - Empty list
-- URL: {{base_url}}/decks?empty=true
+- Name: Success - With decks  
+  URL: {{base_url}}/decks
+- Name: Success - Empty list  
+  URL: {{base_url}}/decks?empty=true
 
 ### Create Deck
-- Name: Success - Deck created
-- URL: {{base_url}}/decks
-- Name: Error - Validation failed
-- URL: {{base_url}}/decks
+- Name: Success - Deck created  
+  URL: {{base_url}}/decks
+- Name: Error - Validation failed  
+  URL: {{base_url}}/decks
 
 ### Create Card
-- Name: Success - Card created
-- URL: {{base_url}}/decks/1/cards
-- Name: Error - Card already exists
-- URL: {{base_url}}/decks/1/cards
+- Name: Success - Card created  
+  URL: {{base_url}}/decks/{{deck_id}}/cards
+- Name: Error - Card already exists  
+  URL: {{base_url}}/decks/{{deck_id}}/cards
 
 ### Start Study Session
-- Name: Success - Session started
-- URL: {{base_url}}/study/sessions
+- Name: Success - Session started  
+  URL: {{base_url}}/study/sessions
 
 ### Submit Card Review
-- Name: Success - Review saved
-- URL: {{base_url}}/cards/1/reviews
+- Name: Success - Review saved  
+  URL: {{base_url}}/cards/{{card_id}}/reviews
 
 ### Get Statistics
-- Name: Success - User statistics
-- URL: {{base_url}}/statistics
+- Name: Success - User statistics  
+  URL: {{base_url}}/users/{{user_id}}/statistics
 
 ### Get Learning Progress
-- Name: Success - Progress data
-- URL: {{base_url}}/progress?period=week
+- Name: Success - Progress data  
+  URL: {{base_url}}/progress?period=week
